@@ -21,8 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@maticnetwork/maticjs": "^3.3.0",
-    "@maticnetwork/maticjs-ethers": "^1.0.2",
+    "@nestjs-modules/ioredis": "^1.0.1",
     "@nestjs/bull": "^0.6.0",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.2.0",
@@ -30,6 +29,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/throttler": "^3.0.0",
     "bull": "^4.8.4",
+    "ethers": "^5.6.9",
     "ioredis": "^4.28.5",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

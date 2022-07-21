@@ -1,6 +1,14 @@
 export default () => ({
-  port: parseInt(process.env.PORT, 10) || 3000,
+  port: parseInt(process.env.PORT, 10),
   redis: {
-    uri: process.env.REDIS_SOTRAGE_URI || 'redis://127.0.0.1:6379/0',
+    uri: process.env.REDIS_STORAGE_URI,
+  },
+  provider: {
+    privateKey: process.env.PROVIDER_PRIVATE_KEY,
+    rpc: process.env.PROVIDER_RPC,
+    contract: {
+      abi: process.env.PROVIDER_ABI_FILEPATH,
+      address: process.env.PROVIDER_TOKEN_ADDRESS,
+    },
   },
 });
