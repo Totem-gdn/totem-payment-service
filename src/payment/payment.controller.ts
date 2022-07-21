@@ -1,14 +1,17 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { ThrottlerBehindProxyGuard } from '../throttler/throttler.guards';
+import { ResponsePaymentAddressDTO } from './payment.dto';
 
 @Controller('payment')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
-  @Get()
+  @Get('address')
   @UseGuards(ThrottlerBehindProxyGuard)
-  requestPaymentAddress() {
-    return this.paymentService.createPaymentRequest();
+  requestPaymentAddress(): ResponsePaymentAddressDTO {
+    return {
+      address: this.paymentService.getPaymentAddress(),
+    };
   }
 }

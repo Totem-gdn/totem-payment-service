@@ -1,15 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
-import { QUEUE_NAME } from './payment.constants';
+import { Injectable } from '@nestjs/common';
+import { ProviderService } from '../provider/provider.service';
 
 @Injectable()
 export class PaymentService {
-  constructor(@InjectQueue(QUEUE_NAME) private readonly paymentsQueue: Queue) {
-    //
-  }
+  constructor(private readonly providerService: ProviderService) {}
 
-  createPaymentRequest() {
-    Logger.log(`creating payment request`);
+  public getPaymentAddress(): string {
+    return this.providerService.walletAddress;
   }
 }

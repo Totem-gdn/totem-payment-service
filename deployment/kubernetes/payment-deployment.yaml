@@ -22,9 +22,17 @@ spec:
               protocol: TCP
           env:
             - name: PORT
-              value: "3000"
+              value:
             - name: REDIS_STORAGE_URI
-              value: redis://redis:6379/0
+              value:
+            - name: PROVIDER_PRIVATE_KEY
+              value:
+            - name: PROVIDER_RPC
+              value:
+            - name: PROVIDER_ABI_FILEPATH
+              value:
+            - name: PROVIDER_TOKEN_ADDRESS
+              value:
           image: 667950714614.dkr.ecr.us-east-1.amazonaws.com/payment-service:latest
           imagePullPolicy: IfNotPresent
           livenessProbe:

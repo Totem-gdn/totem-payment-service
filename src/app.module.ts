@@ -4,6 +4,7 @@ import configuration from '../config/configuration';
 import { PaymentModule } from './payment/payment.module';
 import { BullModule } from '@nestjs/bull';
 import { HealthModule } from './health/health.module';
+import { ConsumersModule } from './consumers/consumers.module';
 
 @Module({
   imports: [
@@ -14,11 +15,12 @@ import { HealthModule } from './health/health.module';
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
         url: config.get<string>('redis.uri'),
-        prefix: 'pmq',
+        prefix: 'psmq', // payment service message queue
       }),
       inject: [ConfigService],
     }),
     HealthModule,
+    ConsumersModule,
     PaymentModule,
   ],
 })
