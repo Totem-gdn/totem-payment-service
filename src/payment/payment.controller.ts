@@ -1,17 +1,30 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Param } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { ThrottlerBehindProxyGuard } from '../throttler/throttler.guards';
-import { ResponsePaymentAddressDTO } from './payment.dto';
+import { ResponseAssetPaymentInfoDTO, ResponseAssetsDTO } from './payment.dto';
 
-@Controller('payment')
+@Controller('assets')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
-  @Get('address')
-  @UseGuards(ThrottlerBehindProxyGuard)
-  requestPaymentAddress(): ResponsePaymentAddressDTO {
+  @Get()
+  getAssets(): ResponseAssetsDTO {
+    const assets = this.paymentService.getAssets();
+    return { assets };
+  }
+
+  @Get(':asset/payment-info')
+  getAssetPaymentInfo(@Param('asset') asset: string): ResponseAssetPaymentInfoDTO {
+    if (!asset) {
+      throw new HttpException(`invalid asset`, HttpStatus.BAD_REQUEST);
+    }
+    const assetInfo = this.paymentService.getAssetPaymentInfo(asset);
+    if (!assetInfo) {
+      throw new HttpException(`asset ${asset} not found`, HttpStatus.NOT_FOUND);
+    }
     return {
-      address: this.paymentService.getPaymentAddress(),
+      address: assetInfo.address,
+      token: assetInfo.token,
+      price: assetInfo.price,
     };
   }
 }

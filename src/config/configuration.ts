@@ -11,4 +11,5 @@ export default () => ({
       address: process.env.PROVIDER_TOKEN_ADDRESS,
     },
   },
+  assets: JSON.parse(Buffer.from(process.env.ASSETS, 'base64').toString('utf8')),
 });

@@ -21,13 +21,11 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@nestjs-modules/ioredis": "^1.0.1",
     "@nestjs/bull": "^0.6.0",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
-    "@nestjs/throttler": "^3.0.0",
     "bull": "^4.8.4",
     "ethers": "^5.6.9",
     "ioredis": "^4.28.5",

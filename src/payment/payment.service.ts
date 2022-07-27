@@ -5,7 +5,11 @@ import { ProviderService } from '../provider/provider.service';
 export class PaymentService {
   constructor(private readonly providerService: ProviderService) {}
 
-  public getPaymentAddress(): string {
-    return this.providerService.walletAddress;
+  public getAssets(): string[] {
+    return this.providerService.assets();
+  }
+
+  public getAssetPaymentInfo(asset: string) {
+    return this.providerService.assetPaymentInfo(asset);
   }
 }
