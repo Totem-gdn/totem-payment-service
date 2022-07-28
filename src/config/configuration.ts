@@ -1,5 +1,9 @@
 export default () => ({
   port: parseInt(process.env.PORT, 10),
+  assetGenerator: {
+    host: process.env.ASSET_GENERATOR_HOST,
+    port: process.env.ASSET_GENERATOR_PORT,
+  },
   redis: {
     uri: process.env.REDIS_STORAGE_URI,
   },
@@ -11,5 +15,5 @@ export default () => ({
       address: process.env.PROVIDER_TOKEN_ADDRESS,
     },
   },
-  assets: JSON.parse(Buffer.from(process.env.ASSETS, 'base64').toString('utf8')),
+  assets: JSON.parse(process.env.ASSETS),
 });

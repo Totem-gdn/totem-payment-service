@@ -15,7 +15,7 @@ spec:
         app: payment
     spec:
       containers:
-        - name: payment
+        - name: minter-assets
           ports:
             - containerPort: 3000
               name: http
@@ -33,7 +33,7 @@ spec:
               value:
             - name: PROVIDER_TOKEN_ADDRESS
               value:
-          image: 667950714614.dkr.ecr.us-east-1.amazonaws.com/payment-service:latest
+          image: 667950714614.dkr.ecr.us-east-1.amazonaws.com/minter-service:latest
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3

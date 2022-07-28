@@ -1,10 +1,10 @@
 import { Controller, Get, HttpException, HttpStatus, Param } from '@nestjs/common';
-import { PaymentService } from './payment.service';
-import { ResponseAssetPaymentInfoDTO, ResponseAssetsDTO } from './payment.dto';
+import { AssetsService } from './assets.service';
+import { ResponseAssetPaymentInfoDTO, ResponseAssetsDTO } from './assets.dto';
 
 @Controller('assets')
-export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
+export class AssetsController {
+  constructor(private readonly paymentService: AssetsService) {}
 
   @Get()
   getAssets(): ResponseAssetsDTO {

@@ -78,11 +78,11 @@ export class ProviderService {
   }
 
   private async onAssetTransfer(asset: string, from: string, amount: BigNumber, event: Event) {
-    this.logger.log(`payment for ${asset}, from ${from}, with amount ${amount.toString()}`, {
-      transactionHash: event.transactionHash,
-    });
+    this.logger.log(
+      `payment for ${asset}, from ${from}, with amount ${amount.toString()} in transaction ${event.transactionHash}`,
+    );
     if (amount.toBigInt() < this.assetsPaymentInfo[asset].price) {
-      this.logger.warn(`received payment is less then expected`, { transactionHash: event.transactionHash });
+      this.logger.warn(`received payment is less then expected in transaction ${event.transactionHash}`);
       return;
     }
     await this.assetsQueue.add(

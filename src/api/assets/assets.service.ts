@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ProviderService } from '../provider/provider.service';
+import { ProviderService } from '../../provider/provider.service';
 
 @Injectable()
-export class PaymentService {
+export class AssetsService {
   constructor(private readonly providerService: ProviderService) {}
 
   public getAssets(): string[] {
