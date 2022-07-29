@@ -38,7 +38,7 @@ spec:
           envFrom:
             - secretRef:
                 name: payment
-          image: 667950714614.dkr.ecr.us-east-1.amazonaws.com/minter-service:latest
+          image: 667950714614.dkr.ecr.us-east-1.amazonaws.com/payment-service:latest
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
