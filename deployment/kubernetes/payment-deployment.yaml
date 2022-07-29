@@ -15,25 +15,30 @@ spec:
         app: payment
     spec:
       containers:
-        - name: payment
+        - name: minter-assets
           ports:
             - containerPort: 3000
               name: http
               protocol: TCP
           env:
             - name: PORT
-              value:
+              value: "3000"
             - name: REDIS_STORAGE_URI
-              value:
-            - name: PROVIDER_PRIVATE_KEY
-              value:
+              value: redis://redis:6379/0
+            - name: ASSET_GENERATOR_HOST
+              value: asset-generator
+            - name: ASSET_GENERATOR_PORT
+              value: "50051"
             - name: PROVIDER_RPC
-              value:
+              value: https://matic-mumbai.chainstacklabs.com
             - name: PROVIDER_ABI_FILEPATH
-              value:
+              value: contract/erc20.abi.json
             - name: PROVIDER_TOKEN_ADDRESS
-              value:
-          image: 667950714614.dkr.ecr.us-east-1.amazonaws.com/payment-service:latest
+              value: 0xB408CC68A12d7d379434E794880403393B64E44b
+          envFrom:
+            - secretRef:
+                name: payment
+          image: 667950714614.dkr.ecr.us-east-1.amazonaws.com/minter-service:latest
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3

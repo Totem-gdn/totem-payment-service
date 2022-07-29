@@ -38,4 +38,5 @@ lerna-debug.log*
 .env.test
 
 # Contract files
-/contract
+contract/*
+!contract/erc20.abi.json
