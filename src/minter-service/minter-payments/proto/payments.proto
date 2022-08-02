@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package payments;
+
+message CreatePaymentDetailsRequest {
+  string transaction_hash = 1;
+  string from = 2;
+  string to = 3;
+  string amount = 4;
+}
+
+message Empty {}
+
+message PaymentDetails {
+  string transaction_hash = 1;
+  string from = 2;
+  string to = 3;
+  int64 timestamp = 4;
+  string amount = 5;
+}
+
+message ListPaymentDetailsRequest {
+  int64 from_timestamp = 1;
+  string from_address = 2;
+}
+
+message ListPaymentDetailsResponse {
+  repeated PaymentDetails payment_details = 1;
+}
+
+service Payments {
+  rpc CreatePaymentDetails(CreatePaymentDetailsRequest) returns (Empty);
+  rpc ListPaymentDetails(ListPaymentDetailsRequest) returns (ListPaymentDetailsResponse);
+}
