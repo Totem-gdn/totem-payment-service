@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { join } from 'path';
-import { MinterAssetsService } from './minter-assets.service';
+import { MinterPaymentsService } from './minter-payments.service';
 
 @Module({
   imports: [ConfigModule],
   providers: [
     {
-      provide: 'ASSETS_PACKAGE',
+      provide: 'PAYMENTS_PACKAGE',
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const { host, port } = config.get<{ host: string; port: string }>('assetGenerator');
@@ -16,14 +16,14 @@ import { MinterAssetsService } from './minter-assets.service';
           transport: Transport.GRPC,
           options: {
             url: `${host}:${port}`,
-            package: 'assets',
-            protoPath: join(__dirname, 'proto', 'assets.proto'),
+            package: 'payments',
+            protoPath: join(__dirname, 'proto', 'payments.proto'),
           },
         });
       },
     },
-    MinterAssetsService,
+    MinterPaymentsService,
   ],
-  exports: [MinterAssetsService],
+  exports: [MinterPaymentsService],
 })
-export class MinterAssetsModule {}
+export class MinterPaymentsModule {}

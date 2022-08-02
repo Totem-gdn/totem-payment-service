@@ -5,7 +5,14 @@ import { ConfigService } from '@nestjs/config';
 import { BigNumber, Contract, Event, providers, Wallet } from 'ethers';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
-import { ASSET_EVENT, AssetsQueuePayload, QUEUE_NAME } from '../consumers/consumers.constants';
+import {
+  AssetEvent,
+  AssetsQueuePayload,
+  DefaultJobOptions,
+  PaymentEvent,
+  PaymentsQueuePayload,
+  QueueName,
+} from '../consumers/consumers.constants';
 
 type EnvAssets = Array<{
   name: string;
@@ -39,7 +46,8 @@ export class ProviderService {
 
   constructor(
     private readonly config: ConfigService,
-    @InjectQueue(QUEUE_NAME.ASSETS) private readonly assetsQueue: Queue<AssetsQueuePayload>,
+    @InjectQueue(QueueName.Assets) private readonly assetsQueue: Queue<AssetsQueuePayload>,
+    @InjectQueue(QueueName.Payments) private readonly paymentsQueue: Queue<PaymentsQueuePayload>,
   ) {
     this.token = {
       address: config.get<string>('provider.contract.address'),
@@ -70,37 +78,41 @@ export class ProviderService {
       const contract = this.baseContract.connect(paymentInfo.wallet);
       contract.on(
         contract.filters.Transfer(null, paymentInfo.wallet.address),
-        (from: string, _to: string, amount: BigNumber, event: Event) =>
-          this.onAssetTransfer(asset.name, from, amount, event),
+        (from: string, to: string, amount: BigNumber, event: Event) =>
+          this.onAssetTransfer(asset.name, from, to, amount, event),
       );
       this.assetsPaymentInfo[asset.name] = paymentInfo;
     }
   }
 
-  private async onAssetTransfer(asset: string, from: string, amount: BigNumber, event: Event) {
+  private async onAssetTransfer(asset: string, from: string, to: string, amount: BigNumber, event: Event) {
     this.logger.log(
       `payment for ${asset}, from ${from}, with amount ${amount.toString()} in transaction ${event.transactionHash}`,
+    );
+    // register every payment
+    await this.paymentsQueue.add(
+      PaymentEvent.Create,
+      {
+        transactionHash: event.transactionHash,
+        from: from,
+        to: to,
+        amount: amount.toString(),
+      },
+      {
+        jobId: event.transactionHash,
+        ...DefaultJobOptions,
+      },
     );
     if (amount.toBigInt() < this.assetsPaymentInfo[asset].price) {
       this.logger.warn(`received payment is less then expected in transaction ${event.transactionHash}`);
       return;
     }
     await this.assetsQueue.add(
-      ASSET_EVENT.CREATE,
+      AssetEvent.Create,
       { from, asset, amount },
       {
-        jobId: event.transactionHash, // because of jobId is unique -- it will be ignored if already exists
-        attempts: 5,
-        backoff: {
-          type: 'exponential', // 2 ^ attempts * delay
-          delay: 5 * 60 * 1000,
-        },
-        removeOnComplete: {
-          age: 24 * 60 * 60, // remove job after 24 hours to prevent duplications
-        },
-        removeOnFail: {
-          age: 30 * 24 * 60 * 60, // remove job after 30 days
-        },
+        jobId: event.transactionHash,
+        ...DefaultJobOptions,
       },
     );
   }

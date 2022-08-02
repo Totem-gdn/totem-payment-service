@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
 import configuration from './config/configuration';
-import { AssetsModule } from './api/assets/assets.module';
-import { HealthModule } from './api/health/health.module';
+import { AssetsModule } from './controllers/assets/assets.module';
+import { HealthModule } from './controllers/health/health.module';
+import { PaymentsModule } from './controllers/payments/payments.module';
 import { ConsumersModule } from './consumers/consumers.module';
 
 @Module({
@@ -22,6 +23,7 @@ import { ConsumersModule } from './consumers/consumers.module';
     ConsumersModule,
     HealthModule,
     AssetsModule,
+    PaymentsModule,
   ],
 })
 export class AppModule {}

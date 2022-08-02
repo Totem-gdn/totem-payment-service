@@ -2,10 +2,14 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ProviderService } from './provider.service';
 import { BullModule } from '@nestjs/bull';
-import { QUEUE_NAME } from '../consumers/consumers.constants';
+import { QueueName } from '../consumers/consumers.constants';
 
 @Module({
-  imports: [ConfigModule, BullModule.registerQueue({ name: QUEUE_NAME.ASSETS })],
+  imports: [
+    ConfigModule,
+    BullModule.registerQueue({ name: QueueName.Assets }),
+    BullModule.registerQueue({ name: QueueName.Payments }),
+  ],
   providers: [ProviderService],
   exports: [ProviderService],
 })

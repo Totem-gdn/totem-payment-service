@@ -5,6 +5,8 @@ export interface MintAssetRequest {
   assetType: string;
 }
 
+export type Empty = Record<string, never>;
+
 export interface Assets {
-  MintAsset(req: MintAssetRequest): Observable<Record<string, never>>;
+  MintAsset(req: MintAssetRequest): Observable<Empty>;
 }
