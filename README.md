@@ -33,3 +33,13 @@ ASSETS=[{"name":"asset1","price":"5","wallet":"0x0000000000000000000000000000000
    - Status will be changed to `Connected - Web3[0x_YOUR_WALLET_ADDRESS]`
    - Find option `6. claim` and click `Write` button
    - In MetaMask click `Confirm` button (scroll down if you don't see it)
+
+## Payment process
+
+1. Receive available assets list
+2. Receive asset payment details
+3. Call ERC20 token contract function `transfer` with web3auth provider and transfer the required number of tokens to the asset wallet address
+4. totem-payment-service provider listen to ERC20 token `event Transfer` for income transfers
+5. totem-payment-service provider sends `payment details` and `asset minting` events to queues
+6. totem-payment-service payments consumer receives an event from queue and sends payment details to the asset-generator for storing in the persistent database
+7. totem-payment-service assets consumer receives an event from queue and sends request to the asset-generator to mint asset for the payer's address
