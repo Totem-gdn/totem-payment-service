@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ProviderService } from './provider.service';
+import { PaymentProviderService } from './payment-provider.service';
+import { NFTProviderService } from './nft-provider.service';
 import { BullModule } from '@nestjs/bull';
 import { QueueName } from '../consumers/consumers.constants';
 
@@ -10,7 +11,7 @@ import { QueueName } from '../consumers/consumers.constants';
     BullModule.registerQueue({ name: QueueName.Assets }),
     BullModule.registerQueue({ name: QueueName.Payments }),
   ],
-  providers: [ProviderService],
-  exports: [ProviderService],
+  providers: [PaymentProviderService, NFTProviderService],
+  exports: [PaymentProviderService, NFTProviderService],
 })
 export class ProviderModule {}

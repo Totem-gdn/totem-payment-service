@@ -5,6 +5,7 @@ import { AssetsConsumerService } from './assets-consumer.service';
 import { MinterAssetsModule } from '../minter-service/minter-assets/minter-assets.module';
 import { PaymentsConsumerService } from './payments-consumer.service';
 import { MinterPaymentsModule } from '../minter-service/minter-payments/minter-payments.module';
+import { ProviderModule } from '../provider/provider.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { MinterPaymentsModule } from '../minter-service/minter-payments/minter-p
     BullModule.registerQueue({ name: QueueName.Payments }),
     MinterAssetsModule,
     MinterPaymentsModule,
+    ProviderModule,
   ],
   providers: [AssetsConsumerService, PaymentsConsumerService],
 })
