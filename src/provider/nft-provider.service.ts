@@ -67,7 +67,7 @@ export class NFTProviderService {
     if (!contract) {
       throw new Error(`asset contract not found or were corrupted`);
     }
-    const tokenURIBuffer = crypto.getRandomValues(new Uint8Array(options.uriLength));
+    const tokenURIBuffer = crypto.getRandomValues(new Uint32Array(options.uriLength));
     const tokenURI = `0x${Buffer.from(tokenURIBuffer).toString('hex')}`;
     const gasPrice = (await this.provider.getGasPrice()).mul(105n).div(100n); // add extra 5% to gas price
     const gasLimit = await contract.estimateGas.safeMint(to, tokenURI);
