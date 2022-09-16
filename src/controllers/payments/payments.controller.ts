@@ -28,6 +28,9 @@ export class PaymentsController {
 
   @Get('faucet')
   async requestFaucet(@Query() { address }: PaymentFaucetRequestDTO): Promise<void> {
+    if (!address) {
+      throw new BadRequestException('invalid address');
+    }
     const browser = await puppeteer.launch();
     const context = await browser.createIncognitoBrowserContext();
     const page = await context.newPage();
