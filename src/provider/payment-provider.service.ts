@@ -18,6 +18,10 @@ type EnvAssets = Array<{
   name: string;
   price: string;
   wallet: string;
+  contract: {
+    abi: string;
+    address: string;
+  };
 }>;
 
 type Asset = {
@@ -33,11 +37,11 @@ interface AssetsPaymentInfo {
 }
 
 @Injectable()
-export class ProviderService {
-  private readonly logger = new Logger(ProviderService.name);
-  private readonly rootWallet: Wallet;
-  private readonly baseProvider: providers.JsonRpcProvider;
-  private readonly baseContract: Contract;
+export class PaymentProviderService {
+  private readonly logger = new Logger(PaymentProviderService.name);
+  private readonly wallet: Wallet;
+  private readonly rpcProvider: providers.JsonRpcProvider;
+  private readonly contract: Contract;
   private readonly token: {
     address: string;
     abi: string;
@@ -53,9 +57,9 @@ export class ProviderService {
       address: config.get<string>('provider.contract.address'),
       abi: readFileSync(join(process.cwd(), config.get<string>('provider.contract.abi'))).toString('utf8'),
     };
-    this.rootWallet = new Wallet(config.get<string>('provider.privateKey'));
-    this.baseProvider = new providers.JsonRpcProvider(config.get<string>('provider.rpc'));
-    this.baseContract = new Contract(this.token.address, this.token.abi);
+    this.wallet = new Wallet(config.get<string>('provider.privateKey'));
+    this.rpcProvider = new providers.JsonRpcProvider(config.get<string>('provider.rpc'));
+    this.contract = new Contract(this.token.address, this.token.abi);
     this.processAssets(config.get<EnvAssets>('assets'));
   }
 
@@ -66,7 +70,7 @@ export class ProviderService {
     for (const asset of assets) {
       const paymentInfo: AssetPaymentInfo = {
         price: BigInt(asset.price),
-        wallet: new Wallet(asset.wallet, this.baseProvider),
+        wallet: new Wallet(asset.wallet, this.rpcProvider),
       };
       if (paymentInfo.price === 0n) {
         this.logger.warn(`asset ${asset.name} initialized with price ${paymentInfo.price}`);
@@ -75,7 +79,7 @@ export class ProviderService {
         throw new Error(`asset ${asset.name} price can't be less then 0, received price ${paymentInfo.price}`);
       }
       // initialize contract event listeners for asset wallet
-      const contract = this.baseContract.connect(paymentInfo.wallet);
+      const contract = this.contract.connect(paymentInfo.wallet);
       contract.on(
         contract.filters.Transfer(null, paymentInfo.wallet.address),
         (from: string, to: string, amount: BigNumber, event: Event) =>

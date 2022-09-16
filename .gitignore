@@ -34,9 +34,10 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-.env
-.env.test
+.env*
+!.env.sample
 
 # Contract files
 contract/*
 !contract/erc20.abi.json
+!contract/erc721.abi.json
