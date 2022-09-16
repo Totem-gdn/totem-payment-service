@@ -3,6 +3,10 @@ export interface PaymentDetailsListQueryDTO {
   from_address: string;
 }
 
+export interface PaymentFaucetRequestDTO {
+  address: string;
+}
+
 export interface PaymentDetailsDTO {
   transactionHash: string;
   from: string;
