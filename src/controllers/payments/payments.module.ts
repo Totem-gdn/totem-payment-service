@@ -1,9 +1,14 @@
 import { Module } from '@nestjs/common';
-import { MinterPaymentsModule } from '../../minter-service/minter-payments/minter-payments.module';
 import { PaymentsController } from './payments.controller';
+import { PaymentsService } from './payments.service';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { PaymentDetails, PaymentDetailsSchema } from './schemas/payment-details';
 
 @Module({
-  imports: [MinterPaymentsModule],
+  imports: [ConfigModule, MongooseModule.forFeature([{ name: PaymentDetails.name, schema: PaymentDetailsSchema }])],
   controllers: [PaymentsController],
+  providers: [PaymentsService],
+  exports: [PaymentsService],
 })
 export class PaymentsModule {}

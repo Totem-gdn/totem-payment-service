@@ -3,8 +3,20 @@ export interface PaymentDetailsListQueryDTO {
   from_address: string;
 }
 
+export interface PaymentDetailsFilters {
+  fromTimestamp: number;
+  fromAddress: string;
+}
+
 export interface PaymentFaucetRequestDTO {
   address: string;
+}
+
+export interface PaymentDetailsCreateDTO {
+  transactionHash: string;
+  from: string;
+  to: string;
+  amount: string;
 }
 
 export interface PaymentDetailsDTO {

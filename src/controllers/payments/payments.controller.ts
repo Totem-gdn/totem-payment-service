@@ -1,18 +1,22 @@
 import puppeteer from 'puppeteer';
 import { BadRequestException, Controller, Get, Logger, Query } from '@nestjs/common';
-import { MinterPaymentsService } from '../../minter-service/minter-payments/minter-payments.service';
-import { PaymentDetailsListQueryDTO, PaymentDetailsListResponseDTO, PaymentFaucetRequestDTO } from './payments.dto';
-import { ListPaymentDetailsRequest } from '../../minter-service/minter-payments/interfaces/minter-payments.interface';
+import {
+  PaymentDetailsFilters,
+  PaymentDetailsListQueryDTO,
+  PaymentDetailsListResponseDTO,
+  PaymentFaucetRequestDTO,
+} from './dto/payments.dto';
+import { PaymentsService } from './payments.service';
 
 @Controller('payments')
 export class PaymentsController {
   logger = new Logger(PaymentsController.name);
 
-  constructor(private readonly minterPaymentsService: MinterPaymentsService) {}
+  constructor(private readonly paymentsService: PaymentsService) {}
 
   @Get()
   async getPaymentDetailsList(@Query() query: PaymentDetailsListQueryDTO): Promise<PaymentDetailsListResponseDTO> {
-    const filters: ListPaymentDetailsRequest = {
+    const filters: PaymentDetailsFilters = {
       fromTimestamp: 0,
       fromAddress: '',
     };
@@ -22,7 +26,7 @@ export class PaymentsController {
     if (!!query.from_address) {
       filters.fromAddress = query.from_address;
     }
-    const paymentDetails = await this.minterPaymentsService.listPaymentDetails(filters);
+    const paymentDetails = await this.paymentsService.listPaymentDetails(filters);
     return { paymentDetails };
   }
 

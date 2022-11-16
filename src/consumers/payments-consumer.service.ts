@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectQueue, Process, Processor } from '@nestjs/bull';
 import { Job, Queue } from 'bull';
 import { CreatePaymentPayload, PaymentEvent, PaymentsQueuePayload, QueueName } from './consumers.constants';
-import { MinterPaymentsService } from '../minter-service/minter-payments/minter-payments.service';
+import { PaymentsService } from '../controllers/payments/payments.service';
 
 @Injectable()
 @Processor(QueueName.Payments)
@@ -11,7 +11,7 @@ export class PaymentsConsumerService {
 
   constructor(
     @InjectQueue(QueueName.Payments) private readonly queue: Queue<PaymentsQueuePayload>,
-    private readonly minterPaymentsService: MinterPaymentsService,
+    private readonly paymentsService: PaymentsService,
   ) {
     this.queue.on('error', (error: Error) => {
       this.logger.error(error.message);
@@ -27,6 +27,6 @@ export class PaymentsConsumerService {
   @Process(PaymentEvent.Create)
   async createPaymentDetails(job: Job<CreatePaymentPayload>) {
     this.logger.log(`${job.id} saving payment details from ${job.data.from}`);
-    await this.minterPaymentsService.createPaymentDetails(job.data);
+    await this.paymentsService.createPaymentDetails(job.data);
   }
 }

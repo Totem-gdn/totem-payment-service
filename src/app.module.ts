@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
 import configuration from './config/configuration';
 import { AssetsModule } from './controllers/assets/assets.module';
+import { MongooseModule } from '@nestjs/mongoose';
 import { HealthModule } from './controllers/health/health.module';
 import { PaymentsModule } from './controllers/payments/payments.module';
 import { ConsumersModule } from './consumers/consumers.module';
@@ -11,6 +12,14 @@ import { ConsumersModule } from './consumers/consumers.module';
   imports: [
     ConfigModule.forRoot({
       load: [configuration],
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get<string>('mongodb.uri'),
+        dbName: configService.get<string>('mongodb.database'),
+      }),
+      inject: [ConfigService],
     }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
