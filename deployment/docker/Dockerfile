@@ -40,6 +40,8 @@ ENV NODE_ENV=${NODE_ENV} \
 
 WORKDIR /usr/src/payment-service
 
+ADD https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem ./rds-combined-ca-bundle.pem
+
 COPY package.json package-lock.json ./
 
 RUN npm ci --omit=dev

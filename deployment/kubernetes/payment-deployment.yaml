@@ -26,7 +26,7 @@ spec:
             - name: REDIS_STORAGE_URI
               value: redis://redis:6379/0
             - name: MONGODB_DATABASE
-              value: totem-gdn
+              value: assets
             - name: PROVIDER_RPC
               value: https://matic-mumbai.chainstacklabs.com
             - name: PROVIDER_ABI_FILEPATH
