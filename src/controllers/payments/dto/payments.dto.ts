@@ -8,10 +8,6 @@ export interface PaymentDetailsFilters {
   fromAddress: string;
 }
 
-export interface PaymentFaucetRequestDTO {
-  address: string;
-}
-
 export interface PaymentDetailsCreateDTO {
   transactionHash: string;
   from: string;
