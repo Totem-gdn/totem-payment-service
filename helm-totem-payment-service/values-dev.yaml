@@ -27,7 +27,7 @@ ingress:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80},[{"HTTPS": 443}]'
     alb.ingress.kubernetes.io/scheme: internet-facing
   hosts:
-    - host: test-totem-payment-service.totem-explorer.com
+    - host: test-dev-totem-payment-service.totem-explorer.com
       paths:
         - path: /
           pathType: Prefix
@@ -57,10 +57,10 @@ tolerations:
     value: "core"
     effect: "NoSchedule"
 
+envFrom:
+    - secretRef:
+        name: token-faucet
 env:
-   PORT: "3000"
-   REDIS_STORAGE_URI:
-   MONGODB_DATABASE:
-   PROVIDER_RPC:
-   PROVIDER_ABI_FILEPATH:
-   PROVIDER_TOKEN_ADDRESS:
+      PORT:
+      MATIC_AMOUNT:
+      USDC_AMOUNT:

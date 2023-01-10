@@ -57,10 +57,10 @@ tolerations:
     value: "core"
     effect: "NoSchedule"
 
+envFrom:
+    - secretRef:
+        name: token-faucet
 env:
-   PORT: "3000"
-   REDIS_STORAGE_URI:
-   MONGODB_DATABASE:
-   PROVIDER_RPC:
-   PROVIDER_ABI_FILEPATH:
-   PROVIDER_TOKEN_ADDRESS:
+      PORT:
+      MATIC_AMOUNT:
+      USDC_AMOUNT:
