@@ -7,9 +7,10 @@ import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { AssetsQueuePayload, QueueName } from '../consumers/consumers.constants';
 import { BigNumber, constants, Contract, Event, providers, Wallet } from 'ethers';
+import { AssetType } from '../utils/enum/asset-type';
 
 type EnvAssets = Array<{
-  name: string;
+  name: AssetType;
   contract: {
     abi: string;
     address: string;
@@ -25,14 +26,18 @@ export class NFTProviderService {
   private readonly ownerWallet: Wallet;
   private readonly provider: providers.JsonRpcProvider;
   private readonly NFTContracts: Record<
-    string,
+    AssetType,
     {
       contract: Contract;
       options: {
         uriLength: number;
       };
     }
-  > = {};
+  > = {
+    [AssetType.AVATAR]: undefined,
+    [AssetType.ITEM]: undefined,
+    [AssetType.GEM]: undefined,
+  };
 
   constructor(
     private readonly config: ConfigService,
@@ -62,7 +67,7 @@ export class NFTProviderService {
     }
   }
 
-  async mintAsset(asset: string, to: string) {
+  async mintAsset(asset: AssetType, to: string): Promise<string> {
     const { contract, options } = this.NFTContracts[asset];
     if (!contract) {
       throw new Error(`asset contract not found or were corrupted`);
@@ -72,11 +77,13 @@ export class NFTProviderService {
     const gasPrice = (await this.provider.getGasPrice()).mul(105n).div(100n); // add extra 5% to gas price
     const gasLimit = await contract.estimateGas.safeMint(to, tokenURI);
     const tx = await contract.safeMint(to, tokenURI, { gasPrice, gasLimit });
+    await tx.wait();
     this.logger.log(
       `minting asset: tx ${tx.hash} ` +
         `for ${to} token uri ${tokenURI} ` +
         `gas price: ${gasPrice.toString()} ` +
         `gas limit: ${gasLimit.toString()}`,
     );
+    return tx.hash;
   }
 }

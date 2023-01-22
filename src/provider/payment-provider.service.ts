@@ -13,9 +13,10 @@ import {
   PaymentsQueuePayload,
   QueueName,
 } from '../consumers/consumers.constants';
+import { AssetType } from '../utils/enum/asset-type';
 
 type EnvAssets = Array<{
-  name: string;
+  name: AssetType;
   price: string;
   wallet: string;
   contract: {
@@ -89,7 +90,7 @@ export class PaymentProviderService {
     }
   }
 
-  private async onAssetTransfer(asset: string, from: string, to: string, amount: BigNumber, event: Event) {
+  private async onAssetTransfer(asset: AssetType, from: string, to: string, amount: BigNumber, event: Event) {
     this.logger.log(
       `payment for ${asset}, from ${from}, with amount ${amount.toString()} in transaction ${event.transactionHash}`,
     );

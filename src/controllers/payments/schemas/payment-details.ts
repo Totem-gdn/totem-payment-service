@@ -1,8 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type PaymentDetailsDocument = PaymentDetails & Document & { createdAt: Date; updatedAt: Date };
-
 @Schema({
   autoCreate: true,
   collection: 'payment_details',
@@ -22,5 +20,7 @@ export class PaymentDetails {
   @Prop({ required: true })
   amount: string;
 }
+
+export type PaymentDetailsDocument = PaymentDetails & Document & { createdAt: Date; updatedAt: Date };
 
 export const PaymentDetailsSchema = SchemaFactory.createForClass(PaymentDetails);

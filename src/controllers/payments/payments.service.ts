@@ -3,10 +3,17 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaymentDetails, PaymentDetailsDocument } from './schemas/payment-details';
 import { PaymentDetailsCreateDTO, PaymentDetailsDTO, PaymentDetailsFilters } from './dto/payments.dto';
+import { PaymentKeyClaim, PaymentKeyClaimDocument } from './schemas/payment-key-claim';
+import { PaymentKeyClaimRequestDTO } from './dto/payment-key.dto';
+import { NFTProviderService } from '../../provider/nft-provider.service';
 
 @Injectable()
 export class PaymentsService {
-  constructor(@InjectModel(PaymentDetails.name) private readonly paymentDetailsModel: Model<PaymentDetailsDocument>) {}
+  constructor(
+    @InjectModel(PaymentDetails.name) private readonly paymentDetailsModel: Model<PaymentDetailsDocument>,
+    @InjectModel(PaymentKeyClaim.name) private readonly paymentKeyClaimModel: Model<PaymentKeyClaimDocument>,
+    private readonly nftProviderService: NFTProviderService,
+  ) {}
 
   async createPaymentDetails(paymentDetails: PaymentDetailsCreateDTO) {
     await this.paymentDetailsModel.create({
@@ -36,5 +43,17 @@ export class PaymentsService {
       });
     }
     return paymentDetailsList;
+  }
+
+  async claimPaymentKey(paymentKeyClaim: PaymentKeyClaimRequestDTO) {
+    const txHash = await this.nftProviderService.mintAsset(paymentKeyClaim.assetType, paymentKeyClaim.player);
+    await this.paymentKeyClaimModel.create({
+      paymentKey: paymentKeyClaim.paymentKey,
+      publisher: paymentKeyClaim.publisher,
+      player: paymentKeyClaim.player,
+      assetType: paymentKeyClaim.assetType,
+      txHash,
+    });
+    return txHash;
   }
 }
