@@ -1,11 +1,7 @@
-# Default values for kor-base.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 replicaCount: 1
 
 image:
-  repository: 667950714614.dkr.ecr.us-east-1.amazonaws.com/totem-payment-service
+  repository: 667950714614.dkr.ecr.us-east-1.amazonaws.com/payment-service
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "prod"
@@ -23,17 +19,22 @@ ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/success-codes: '404'
+    alb.ingress.kubernetes.io/group.name: main
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:667950714614:certificate/aa68bfac-fe5d-4b63-972e-91aa3e12a669
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80},[{"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80},{"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
     alb.ingress.kubernetes.io/scheme: internet-facing
   hosts:
-    - host: test-totem-payment-service.totem-explorer.com
-      paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            serviceName: totem-payment-service
-            servicePort: 80
+    - host: payment.totem.gdn
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: payment-service
+                port:
+                  number: 80
   tls: []
 
 resources:
@@ -50,6 +51,7 @@ autoscaling:
   maxReplicas: 5
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
+  scaleDownSeconds: 3
 
 tolerations:
   - key: "dedicated"
@@ -57,10 +59,14 @@ tolerations:
     value: "core"
     effect: "NoSchedule"
 
-envFrom:
-    - secretRef:
-        name: token-faucet
 env:
-      PORT:
-      MATIC_AMOUNT:
-      USDC_AMOUNT:
+      PORT: ""
+      REDIS_STORAGE_URI: ""
+      MONGODB_DATABASE: ""
+      PROVIDER_RPC: ""
+      PROVIDER_ABI_FILEPATH: ""
+      PROVIDER_TOKEN_ADDRESS: ""
+      ASSETS: ""
+      MONGODB_URI: ""
+      PROVIDER_PRIVATE_KEY: ""
+      
