@@ -1,4 +1,5 @@
 import { BigNumber } from 'ethers';
+import { AssetType } from '../utils/enum/asset-type';
 
 export const enum QueueName {
   Assets = 'assets',
@@ -27,7 +28,7 @@ export type AssetsQueuePayload = CreateAssetPayload;
 
 export type CreateAssetPayload = {
   from: string;
-  asset: string;
+  asset: AssetType;
   amount: BigNumber;
 };
 

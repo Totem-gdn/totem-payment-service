@@ -3,7 +3,7 @@ FROM node:lts-alpine AS builder
 
 WORKDIR /usr/src/payment-service
 
-RUN npm i glob rimraf
+RUN apk add --no-cache git && npm i glob rimraf
 
 COPY package.json package-lock.json ./
 
