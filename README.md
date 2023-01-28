@@ -43,3 +43,4 @@ ASSETS=[{"name":"asset1","price":"5","wallet":"0x0000000000000000000000000000000
 5. totem-payment-service provider sends `payment details` and `asset minting` events to queues
 6. totem-payment-service payments consumer receives an event from queue and sends payment details to the asset-generator for storing in the persistent database
 7. totem-payment-service assets consumer receives an event from queue and sends request to the asset-generator to mint asset for the payer's address
+
