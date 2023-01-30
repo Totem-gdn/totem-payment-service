@@ -67,13 +67,18 @@ export class NFTProviderService {
     }
   }
 
+  generateDNA(asset: AssetType): string {
+    const { options } = this.NFTContracts[asset];
+    const tokenURIBuffer = crypto.getRandomValues(new Uint32Array(options.uriLength));
+    return Buffer.from(tokenURIBuffer.buffer).toString('hex');
+  }
+
   async mintAsset(asset: AssetType, to: string): Promise<string> {
-    const { contract, options } = this.NFTContracts[asset];
+    const { contract } = this.NFTContracts[asset];
     if (!contract) {
       throw new Error(`asset contract not found or were corrupted`);
     }
-    const tokenURIBuffer = crypto.getRandomValues(new Uint32Array(options.uriLength));
-    const tokenURI = Buffer.from(tokenURIBuffer.buffer).toString('hex');
+    const tokenURI = this.generateDNA(asset);
     const gasPrice = (await this.provider.getGasPrice()).mul(105n).div(100n); // add extra 5% to gas price
     const gasLimit = await contract.estimateGas.safeMint(to, tokenURI);
     const tx = await contract.safeMint(to, tokenURI, { gasPrice, gasLimit });
