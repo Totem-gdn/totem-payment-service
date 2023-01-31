@@ -7,3 +7,7 @@ export class ResponseAssetPaymentInfoDTO {
   token: string;
   price: string;
 }
+
+export class ResponseGenerateDnaDTO {
+  dna: string;
+}
