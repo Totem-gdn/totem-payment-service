@@ -3,10 +3,9 @@ replicaCount: 1
 image:
   repository: 667950714614.dkr.ecr.us-east-1.amazonaws.com/payment-service
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
   tag: "prod"
 
-fullnameOverride: "totem-payment-service"
+fullnameOverride: "payment-service"
 
 containerPort: 3000
 
@@ -21,20 +20,19 @@ ingress:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/success-codes: '404'
     alb.ingress.kubernetes.io/group.name: main
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:667950714614:certificate/aa68bfac-fe5d-4b63-972e-91aa3e12a669
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:667950714614:certificate/e3ca48cc-c14e-434f-88ec-52310f97cfbc
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80},{"HTTPS": 443}]'
     alb.ingress.kubernetes.io/ssl-redirect: '443'
     alb.ingress.kubernetes.io/scheme: internet-facing
+    external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
   hosts:
-    - host: payment.totem.gdn
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: payment-service
-                port:
-                  number: 80
+    - host: test-payment.totem.gdn
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            serviceName: payment-service
+            servicePort: 80
   tls: []
 
 resources:
@@ -60,13 +58,6 @@ tolerations:
     effect: "NoSchedule"
 
 env:
-      PORT: ""
-      REDIS_STORAGE_URI: ""
-      MONGODB_DATABASE: ""
-      PROVIDER_RPC: ""
-      PROVIDER_ABI_FILEPATH: ""
-      PROVIDER_TOKEN_ADDRESS: ""
-      ASSETS: ""
-      MONGODB_URI: ""
-      PROVIDER_PRIVATE_KEY: ""
-      
+   PORT: ""
+   REDIS_URL: ""
+   EXPLORER_BACKEND_URL: ""
